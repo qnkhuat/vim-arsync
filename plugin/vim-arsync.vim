@@ -40,9 +40,13 @@ function! JobHandler(job_id, data, event_type)
   endif
 endfunction
 
-function! ARsync()
+function! ARsync(direction)
   let l:conf_dict = LoadConf()
-  let l:cmd = l:conf_dict['custom_command']
+  if a:direction == 'down'
+    let l:cmd = l:conf_dict['custom_command_down']
+  else
+    let l:cmd = l:conf_dict['custom_command_up']
+  endif
   call setqflist([], ' ', {'title' : 'vim-arsync'})
   let g:qfid = getqflist({'id' : 0}).id
   let l:job_id = async#job#start(cmd, {
@@ -72,10 +76,14 @@ if !executable('rsync')
   finish
 endif
 
-command! ARsync call ARsync()
+" load if .vim-arsync file exists
+if filereadable('.vim-arsync')
+  command! ARsyncUp call ARsync('up')
+  command! ARsyncDown call ARsync('down')
 
-augroup vimarsync
-  autocmd!
-  autocmd VimEnter * call AutoSync()
-  autocmd DirChanged * call AutoSync()
-augroup END
+  augroup vimarsync
+    autocmd!
+    autocmd VimEnter * call AutoSync()
+    autocmd DirChanged * call AutoSync()
+  augroup END
+endif
