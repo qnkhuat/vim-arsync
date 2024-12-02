@@ -76,14 +76,18 @@ if !executable('rsync')
   finish
 endif
 
-" load if .vim-arsync file exists
-if filereadable('.vim-arsync')
-  command! ARsyncUp call ARsync('up')
-  command! ARsyncDown call ARsync('down')
+function! ARsync()
+  " load if .vim-arsync file exists
+  if filereadable('.vim-arsync')
+    command! ARsyncUp call ARsync('up')
+    command! ARsyncDown call ARsync('down')
 
-  augroup vimarsync
-    autocmd!
-    autocmd VimEnter * call AutoSync()
-    autocmd DirChanged * call AutoSync()
-  augroup END
-endif
+    augroup vimarsync
+      autocmd!
+      autocmd VimEnter * call AutoSync()
+      autocmd DirChanged * call AutoSync()
+    augroup END
+  endif
+endfunction
+
+command! ARsync call ARsync()
