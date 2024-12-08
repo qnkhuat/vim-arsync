@@ -40,7 +40,7 @@ function! JobHandler(job_id, data, event_type)
   endif
 endfunction
 
-function! ARsync(direction)
+function! ARsync_(direction)
   let l:conf_dict = LoadConf()
   if a:direction == 'down'
     let l:cmd = l:conf_dict['custom_command_down']
@@ -60,11 +60,7 @@ function! AutoSync()
   let l:conf_dict = LoadConf()
   if has_key(l:conf_dict, 'auto_sync_up')
     if l:conf_dict['auto_sync_up'] == 1
-      if has_key(l:conf_dict, 'sleep_before_sync')
-        let g:sleep_time = l:conf_dict['sleep_before_sync']*1000
-        autocmd BufWritePost,FileWritePost * call timer_start(g:sleep_time, { -> execute("call ARsync()", "")})
-      else
-        autocmd BufWritePost,FileWritePost * ARsync
+      autocmd BufWritePost,FileWritePost * ARsync_('up')
       endif
       " echo 'Setting up auto sync to remote'
     endif
@@ -79,8 +75,8 @@ endif
 function! ARsync()
   " load if .vim-arsync file exists
   if filereadable('.vim-arsync')
-    command! ARsyncUp call ARsync('up')
-    command! ARsyncDown call ARsync('down')
+    command! ARsyncUp call ARsync_('up')
+    command! ARsyncDown call ARsync_('down')
 
     augroup vimarsync
       autocmd!
