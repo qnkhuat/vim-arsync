@@ -56,17 +56,6 @@ function! ARsync_(direction)
         \ })
 endfunction
 
-function! AutoSync()
-  let l:conf_dict = LoadConf()
-  if has_key(l:conf_dict, 'auto_sync_up')
-    if l:conf_dict['auto_sync_up'] == 1
-      autocmd BufWritePost,FileWritePost * ARsync_('up')
-      endif
-      " echo 'Setting up auto sync to remote'
-    endif
-  endif
-endfunction
-
 if !executable('rsync')
   echoerr 'You need to install rsync to be able to use the vim-arsync plugin'
   finish
@@ -77,12 +66,7 @@ function! ARsync()
   if filereadable('.vim-arsync')
     command! ARsyncUp call ARsync_('up')
     command! ARsyncDown call ARsync_('down')
-
-    augroup vimarsync
-      autocmd!
-      autocmd VimEnter * call AutoSync()
-      autocmd DirChanged * call AutoSync()
-    augroup END
+    autocmd BufWritePost * call ARsync_('up')
   endif
 endfunction
 
