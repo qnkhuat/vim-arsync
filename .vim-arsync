@@ -1,0 +1,2 @@
+custom_command_down rsync -u -e "ssh -p PORT" -rz --exclude ".*"  user@remote:~/ ./
+custom_command_up rsync -u -e "ssh -p PORT" -rz --exclude ".*" ./ user@remote:~/
