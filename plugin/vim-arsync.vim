@@ -67,7 +67,11 @@ function! ARsync()
     command! ARsyncUp call ARsync_('up')
     command! ARsyncDown call ARsync_('down')
     autocmd BufWritePost * call ARsync_('up')
+    call ARsync_('up')
+  else
+    echoerr 'No .vim-arsync file found in current directory'
   endif
+
 endfunction
 
 command! ARsync call ARsync()
